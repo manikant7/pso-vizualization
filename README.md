@@ -2,7 +2,7 @@
 
 Animated visualization of the Particle Swarm Optimization (PSO) algorithm running on 2D benchmark functions.
 
-Particles swarm across a contour plot, converging toward the global minimum over successive iterations.
+Particles swarm across a contour plot, converging toward the global minimum over successive iterations. Rendering is done with OpenCV for lightweight, real-time display.
 
 ## Benchmark Functions
 
@@ -21,9 +21,14 @@ pip install -r requirements.txt
 pip install -e ".[dev]"
 ```
 
+> **Note (WSL users):** OpenCV's Qt backend requires `libSM6` and `libICE6`. Install them with:
+> ```bash
+> sudo apt install libsm6 libice6
+> ```
+
 ## Usage
 
-Run the animated visualization:
+Run the animated visualization (press **q** or **Esc** to quit):
 
 ```bash
 python -m pso_visualization.visualize
@@ -60,7 +65,7 @@ pso_vizualization/
 │       ├── __init__.py
 │       ├── functions.py      # Benchmark objective functions
 │       ├── optimizer.py       # PSO algorithm
-│       └── visualize.py       # Matplotlib animation
+│       └── visualize.py       # OpenCV animation
 ├── tests/
 │   ├── test_functions.py
 │   └── test_optimizer.py
