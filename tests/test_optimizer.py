@@ -12,6 +12,11 @@ class TestParticleSwarmOptimizer:
         assert len(pso.personal_best_scores) == 10
         assert len(pso.history) == 1
 
+    def test_initialization_high_dim(self):
+        pso = ParticleSwarmOptimizer(sphere, (-5, 5), n_particles=10, n_dims=20)
+        assert pso.positions.shape == (10, 20)
+        assert pso.velocities.shape == (10, 20)
+
     def test_particles_within_bounds(self):
         pso = ParticleSwarmOptimizer(sphere, (-3, 3), n_particles=20)
         assert np.all(pso.positions >= -3)
@@ -56,3 +61,9 @@ class TestParticleSwarmOptimizer:
         for _ in range(20):
             pso.step()
         assert np.all(pso.personal_best_scores <= initial_personal_bests)
+
+    def test_20d_converges(self):
+        np.random.seed(42)
+        pso = ParticleSwarmOptimizer(sphere, (-5, 5), n_particles=60, n_dims=20, w=0.5, c1=1.5, c2=1.5)
+        pso.run(300)
+        assert pso.global_best_score < 1.0
