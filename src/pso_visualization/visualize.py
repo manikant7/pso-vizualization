@@ -17,14 +17,15 @@ def build_contour_image(bounds, size=IMG_SIZE):
     Z = rastrigin(np.stack([X, Y], axis=-1))
 
     Z_norm = np.log1p(Z)
-    Z_norm = ((Z_norm - Z_norm.min()) / (Z_norm.max() - Z_norm.min()) * 255).astype(np.uint8)
+    z_range = Z_norm.max() - Z_norm.min()
+    Z_norm = ((Z_norm - Z_norm.min()) / (z_range if z_range > 0 else 1) * 255).astype(np.uint8)
     Z_norm = np.flipud(Z_norm)
     return cv2.applyColorMap(Z_norm, cv2.COLORMAP_VIRIDIS)
 
 
 def world_to_pixel(positions, bounds, size=IMG_SIZE):
     low, high = bounds
-    normalized = (positions - low) / (high - low)
+    normalized = (positions - low) / (high - low if high != low else 1)
     px = (normalized[:, 0] * (size - 1)).astype(int)
     py = ((1 - normalized[:, 1]) * (size - 1)).astype(int)
     return np.column_stack([px, py])

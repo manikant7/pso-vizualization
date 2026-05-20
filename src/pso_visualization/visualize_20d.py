@@ -21,14 +21,15 @@ def build_contour_panel(bounds, size=PANEL_SIZE):
     Z = rastrigin(np.stack([X, Y], axis=-1))
 
     Z_norm = np.log1p(Z)
-    Z_norm = ((Z_norm - Z_norm.min()) / (Z_norm.max() - Z_norm.min()) * 255).astype(np.uint8)
+    z_range = Z_norm.max() - Z_norm.min()
+    Z_norm = ((Z_norm - Z_norm.min()) / (z_range if z_range > 0 else 1) * 255).astype(np.uint8)
     Z_norm = np.flipud(Z_norm)
     return cv2.applyColorMap(Z_norm, cv2.COLORMAP_VIRIDIS)
 
 
 def world_to_pixel(coords_2d, bounds, size=PANEL_SIZE):
     low, high = bounds
-    normalized = (coords_2d - low) / (high - low)
+    normalized = (coords_2d - low) / (high - low if high != low else 1)
     px = np.clip((normalized[:, 0] * (size - 1)).astype(int), 0, size - 1)
     py = np.clip(((1 - normalized[:, 1]) * (size - 1)).astype(int), 0, size - 1)
     return np.column_stack([px, py])

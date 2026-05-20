@@ -18,22 +18,24 @@ def build_contour_image(bounds, size=IMG_SIZE):
 
     Z = np.clip(Z, 0, 500)
     Z_norm = np.log1p(Z)
-    Z_norm = ((Z_norm - Z_norm.min()) / (Z_norm.max() - Z_norm.min()) * 255).astype(np.uint8)
+    z_range = Z_norm.max() - Z_norm.min()
+    Z_norm = ((Z_norm - Z_norm.min()) / (z_range if z_range > 0 else 1) * 255).astype(np.uint8)
     Z_norm = np.flipud(Z_norm)
     return cv2.applyColorMap(Z_norm, cv2.COLORMAP_VIRIDIS)
 
 
 def draw_constraint_circle(img, bounds, size=IMG_SIZE):
     low, high = bounds
-    cx = int((0 - low) / (high - low) * (size - 1))
-    cy = int((1 - (0 - low) / (high - low)) * (size - 1))
-    radius = int(np.sqrt(2) / (high - low) * (size - 1))
+    span = high - low if high != low else 1
+    cx = int((0 - low) / span * (size - 1))
+    cy = int((1 - (0 - low) / span) * (size - 1))
+    radius = int(np.sqrt(2) / span * (size - 1))
     cv2.circle(img, (cx, cy), radius, (0, 0, 255), 1)
 
 
 def world_to_pixel(positions, bounds, size=IMG_SIZE):
     low, high = bounds
-    normalized = (positions - low) / (high - low)
+    normalized = (positions - low) / (high - low if high != low else 1)
     px = (normalized[:, 0] * (size - 1)).astype(int)
     py = ((1 - normalized[:, 1]) * (size - 1)).astype(int)
     return np.column_stack([px, py])
