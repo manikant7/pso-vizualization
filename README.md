@@ -59,7 +59,7 @@ pytest
 ## Project Structure
 
 ```
-pso_vizualization/
+pso-vizualization/
 ├── src/
 │   └── pso_visualization/
 │       ├── __init__.py
