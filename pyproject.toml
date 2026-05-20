@@ -9,7 +9,7 @@ description = "2D Particle Swarm Optimization visualization"
 requires-python = ">=3.10"
 dependencies = [
     "numpy>=1.24",
-    "matplotlib>=3.7",
+    "opencv-python>=4.8",
 ]
 
 [project.optional-dependencies]
